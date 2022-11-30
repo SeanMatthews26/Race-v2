@@ -5,42 +5,43 @@ using UnityEngine;
 
 public class RaceController : MonoBehaviour
 {
-    [SerializeField] GameObject[] checkPointMarker;
+    [SerializeField] GameObject[] checkPoint;
+    [SerializeField] Material yellowMat;
+    [SerializeField] GameObject racer;
+    [SerializeField] Collider player;
 
-    [SerializeField] GameObject checkPoint;
 
-    private Vector3[] checkPointMarkerPos;
-
-    private quaternion[] checkPointMarkerRot;
-
-    public bool raceStarted = false;
+    private int checkPointsPassed = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        checkPointMarkerPos = new Vector3[3];
-        checkPointMarkerRot = new quaternion[3];
-
-        for (int i = 0; i < 3 ; i++)
+        for (int i = 0; i < checkPoint.Length; i++)
         {
-            checkPointMarkerPos[i] = checkPointMarker[i].transform.position;
-            Debug.Log(checkPointMarkerPos[i]);
-            checkPointMarkerRot[i] = checkPointMarker[i].transform.rotation;
+            checkPoint[i].SetActive(false);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        CheckPointColour();
+        if (checkPoint[0].GetComponent<CheckPoint>().OnTriggerEnter(player))
+        {
+            Debug.Log("Hello");
+        }
     }
 
     public void RaceStarted()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < checkPoint.Length; i++)
         {
-            Instantiate(checkPoint, checkPointMarkerPos[i], checkPointMarkerRot[i]);
+            checkPoint[i].SetActive(true);
         }
-        Debug.Log("Nice");
+    }
+
+    void CheckPointColour()
+    {
+        checkPoint[checkPointsPassed].GetComponentInChildren<MeshRenderer>().material = yellowMat;
     }
 }
