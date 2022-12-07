@@ -7,6 +7,7 @@ public class Timer : MonoBehaviour
 {
     [SerializeField] float startTime;
     [SerializeField] GameObject raceController;
+    [SerializeField] TextMeshProUGUI winText;
 
     private float time = 0.0f;
     private TextMeshProUGUI timerText;
@@ -23,9 +24,15 @@ public class Timer : MonoBehaviour
     {
         if (raceController.GetComponent<RaceController>().raceStarted) 
         {
-            time -= 1 * Time.deltaTime;
+            if(time > 0.0f) 
+            {
+                time -= 1 * Time.deltaTime;
+            }
+            else if(time < 0.0f) 
+            {
+                time = 0.0f;
+            }
             timerText.text = time.ToString("0.0");
-            Debug.Log(timerText);
         }
     }
 }

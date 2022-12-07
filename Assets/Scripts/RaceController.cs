@@ -11,7 +11,8 @@ public class RaceController : MonoBehaviour
     [SerializeField] Material normalMat;
     [SerializeField] GameObject racer;
     [SerializeField] Collider player;
-    [SerializeField] TextMeshProUGUI timer;
+    [SerializeField] TextMeshProUGUI timerText;
+    [SerializeField] TextMeshProUGUI winText;
 
     public bool raceStarted = false;
     public int checkPointsPassed = 0;
@@ -19,7 +20,8 @@ public class RaceController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timer.enabled = false;
+        timerText.enabled = false;
+        winText.enabled = false;
 
         for (int i = 0; i < checkPoint.Length; i++)
         {
@@ -30,11 +32,16 @@ public class RaceController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       for(int i = 0; i < checkPoint.Length;i++) 
+        UpdateCheckPoints();
+    }
+
+    private void UpdateCheckPoints()
+    {
+        for (int i = 0; i < checkPoint.Length; i++)
         {
             if (checkPoint[i].GetComponent<CheckPoint>().passed)
             {
-               if(checkPointsPassed == i)
+                if (checkPointsPassed == i)
                 {
                     checkPointsPassed++;
                     CheckPointColour();
@@ -45,12 +52,18 @@ public class RaceController : MonoBehaviour
                 }
             }
         }
+
+        if(checkPointsPassed >= checkPoint.Length)
+        {
+            timerText.enabled = false;
+            winText.enabled = true;
+        }
     }
 
     public void RaceStarted()
     {
         raceStarted= true;
-        timer.enabled = true;
+        timerText.enabled = true;
 
         for (int i = 0; i < checkPoint.Length; i++)
         {
