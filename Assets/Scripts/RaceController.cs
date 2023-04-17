@@ -13,15 +13,30 @@ public class RaceController : MonoBehaviour
     [SerializeField] Collider player;
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] TextMeshProUGUI winText;
+    [SerializeField] TextMeshProUGUI loseText;
+    [SerializeField] GameObject raceStarter;
+    [SerializeField] Timer timer;
+    [SerializeField] int laps;
 
-    public bool raceStarted = false;
+    public bool raceOn = false;
     public int checkPointsPassed = 0;
+    private int lapsDone = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        timerText.enabled = false;
         winText.enabled = false;
+        loseText.enabled = false;
+        ResetRace();
+    }
+
+    private void ResetRace()
+    {
+        timerText.enabled = false;
+        raceStarter.SetActive(true);
+        checkPointsPassed = 0;
+
+        timer.GetComponent<Timer>().time = timer.GetComponent<Timer>().startTime;
 
         for (int i = 0; i < checkPoint.Length; i++)
         {
@@ -33,6 +48,7 @@ public class RaceController : MonoBehaviour
     void Update()
     {
         UpdateCheckPoints();
+        CheckPointColour();
     }
 
     private void UpdateCheckPoints()
@@ -44,41 +60,70 @@ public class RaceController : MonoBehaviour
                 if (checkPointsPassed == i)
                 {
                     checkPointsPassed++;
-                    CheckPointColour();
                 }
                 else
                 {
-                    Debug.Log("WrongCheckPoint");
+                    checkPoint[i].GetComponent<CheckPoint>().passed = false;
                 }
             }
         }
 
-        if(checkPointsPassed >= checkPoint.Length)
+        //Laps
+        if(raceOn)
         {
-            timerText.enabled = false;
-            winText.enabled = true;
+            if (checkPointsPassed >= checkPoint.Length)
+            {
+                lapsDone++;
+                checkPointsPassed = 0;
+
+                if(lapsDone == laps)
+                {
+                    WinRace();
+                }
+            }
         }
+    }
+
+    private void WinRace()
+    {
+        raceOn = false;
+        winText.enabled = true;
+        ResetRace();
     }
 
     public void RaceStarted()
     {
-        raceStarted= true;
+        raceStarter.SetActive(false);
+        raceOn= true;
+        winText.enabled = false;
+        loseText.enabled = false;
         timerText.enabled = true;
+        checkPointsPassed = 0;
+        lapsDone = 0;
 
         for (int i = 0; i < checkPoint.Length; i++)
         {
             CheckPointColour();
             checkPoint[i].SetActive(true);
-            Debug.Log("RaceStarted");
         }
     }
 
     void CheckPointColour()
     {
-        for(int i = 0; i<checkPoint.Length; i++) 
+       if(raceOn)
         {
-            checkPoint[i].GetComponentInChildren<MeshRenderer>().material = normalMat;
+            for (int i = 0; i < checkPoint.Length; i++)
+            {
+                checkPoint[i].GetComponentInChildren<MeshRenderer>().material = normalMat;
+            }
+            checkPoint[checkPointsPassed].GetComponentInChildren<MeshRenderer>().material = activeMat;
         }
-        checkPoint[checkPointsPassed].GetComponentInChildren<MeshRenderer>().material = activeMat;
+    }
+
+    public void LoseRace()
+    {
+        raceOn = false;
+        loseText.enabled = true;
+        ResetRace();
     }
 }

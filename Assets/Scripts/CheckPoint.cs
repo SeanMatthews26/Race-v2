@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CheckPoint : MonoBehaviour
 {
+    [SerializeField] GameObject player;
     public bool passed = false;
 
     // Start is called before the first frame update
@@ -21,7 +22,6 @@ public class CheckPoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger");
         passed = true;
     }
 

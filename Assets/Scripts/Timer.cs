@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] float startTime;
+    public float startTime;
     [SerializeField] GameObject raceController;
     [SerializeField] TextMeshProUGUI winText;
 
-    private float time = 0.0f;
+    public float time = 0.0f;
     private TextMeshProUGUI timerText;
 
     // Start is called before the first frame update
@@ -22,7 +22,7 @@ public class Timer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (raceController.GetComponent<RaceController>().raceStarted) 
+        if (raceController.GetComponent<RaceController>().raceOn) 
         {
             if(time > 0.0f) 
             {
@@ -31,6 +31,7 @@ public class Timer : MonoBehaviour
             else if(time < 0.0f) 
             {
                 time = 0.0f;
+                raceController.GetComponent<RaceController>().LoseRace();
             }
             timerText.text = time.ToString("0.0");
         }

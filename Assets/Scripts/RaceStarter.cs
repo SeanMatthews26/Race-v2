@@ -25,6 +25,6 @@ public class RaceStarter : MonoBehaviour
     public void OnTriggerEnter()
     {
         rc.RaceStarted();
-
     }
+
 }
